@@ -29,7 +29,7 @@ import createToken from "../utils/createToken.js";
 // }
 
 export default async function userRegister(req, res) {
-  const { email, username, password } = req.body;
+  const { email, username, password, role } = req.body;
 
   try {
     const userName = await User.findOne({ email });
@@ -38,10 +38,11 @@ export default async function userRegister(req, res) {
     }
 
     const hashed_password = await bcrypt.hash(password, 10);
-
+    const role = req.body.role || "user";
     const user = await User.create({
       email,
       username,
+      role,
       password: hashed_password,
     });
 

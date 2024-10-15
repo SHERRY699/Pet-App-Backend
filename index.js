@@ -13,12 +13,7 @@ Db();
 //middlewares
 app.use(cookieParser());
 app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:8000", // Adjust this to match your frontend's port
-    credentials: true, // Allow credentials to be sent
-  })
-);
+app.use(cors({ origin: "*", credentials: true }));
 
 //routes
 app.use("/user", userRouter);
