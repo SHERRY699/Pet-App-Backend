@@ -51,10 +51,6 @@ export default async function userRegister(req, res) {
     // Send the OTP via email
     // await Mail(otp, user.email); // Use 'email', not '_email'
 
-    const token = createToken(user._id);
-
-    res.cookie("token", token, { httpOnly: true });
-
     return res.status(200).json({
       message: "User is created",
       user,
@@ -63,5 +59,32 @@ export default async function userRegister(req, res) {
     return res
       .status(500)
       .json({ message: "Error during registration", error: error.message });
+  }
+}
+
+export async function userLogin(req, res) {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      try {
+        const comparePassword = await bcrypt.compare(password, user?.password);
+        const token = createToken(user._id);
+
+        res.cookie("token", token, { httpOnly: true });
+
+        if (comparePassword) {
+          res.status(200).json({ message: "Login SuccessFull", user });
+        } else {
+          res.status(500).json({ message: "Invalid Password" });
+        }
+      } catch (error) {
+        res.status(500).json({ message: "Error", error });
+      }
+    } else {
+      res.status(500).json({ message: "Invalid Credentials" });
+    }
+  } catch (error) {
+    res.status(200).json({ message: "Error", error });
   }
 }
