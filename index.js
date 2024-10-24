@@ -13,12 +13,7 @@ Db();
 //middlewares
 app.use(cookieParser());
 app.use(express.json());
-app.use(
-  cors({
-    origin: "https://pet-app-backend-production.up.railway.app",
-    credentials: true,
-  })
-);
+app.use(cors({ origin: "*", credentials: true }));
 
 //routes
 app.use("/user", userRouter);
